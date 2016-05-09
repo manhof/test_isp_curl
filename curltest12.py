@@ -41,6 +41,7 @@ test_script.close()
 os.chmod(config.get('Section 2', 'big_curl_script_location'), 0777)
 print test_script
 #time to create cron jobs
+#running the tests
 tab = CronTab(user= cron_user)
 cmd_curl = config.get('Section 2', 'big_curl_script_location')
 tab.remove_all(comment='CurlScript')
@@ -51,9 +52,10 @@ tab.write()
 #2
 
 tab = CronTab(user= cron_user)
-cmd_curl = config.get('Section 4', 'local_db_file_location')
+cmd_curl1 = config.get('Section 4', 'local_db_file_copy')
+cmd_curl2 = config.get('Section 4', 'local_db_upload')
 tab.remove_all(comment='db_update')
-cron_job_curl = tab.new(cmd_curl, comment='db_update')
+cron_job_curl = tab.new("/usr/bin/python " + cmd_curl1 + " && " cmd_curl2 " > /tmp/update.log", comment='db_update')
 cron_job_curl.minute.every(db_script_frequency)
 tab.write()
 
@@ -61,40 +63,10 @@ tab.write()
 tab = CronTab(user= cron_user)
 cmd_curl = config.get('Section 5', 'remote_upload_file_location')
 tab.remove_all(comment='remote_db_update')
-cron_job_curl = tab.new(cmd_curl, comment='remote_db_update')
+cron_job_curl = tab.new("/usr/bin/python " + cmd_curl + " > /tmp/remote.log 2>&1", comment='remote_db_update')
 cron_job_curl.minute.every(remote_db_script_frequency)
 tab.write()
-#4
 
-#curl_script_frequency= config.get('Section 3','curl_script_frequency')
-#size_per = config.get('Section 6','db_per_test_instance')
-#test_per_min = int(60/int(config.get('Section 1', 'seconds_per_test')))
-#local_db_max = config.get('Section 6', 'local_db_max')
-
-#local_db_delete_frequency=int((int(local_db_max)/ (float(test_per_min) *float(size_per)*float(url_number))))
-#print local_db_delete_frequency
-#local_db_delete_frequency_day= int(local_db_delete_frequency /(60*24))
-#print local_db_delete_frequency_day
-
-#local_db_delete_frequency_hour= int(((local_db_delete_frequency-local_db_delete_frequency_day*60*24)/60))
-#print local_db_delete_frequency_hour
-
-#local_db_delete_frequency_min= (local_db_delete_frequency % 60)
-#print local_db_delete_frequency_min
-
-#tab = CronTab(user= cron_user)
-#cmd_curl = config.get('Section 6', 'local_db_delete_file_location')
-#tab.remove_all(comment='local_rm_db_update')
-#cron_job_curl = tab.new(cmd_curl, comment='local_rm_db_update')
-#if local_db_delete_frequency_day != 0:
-#	cron_job_curl.day.every(local_db_delete_frequency_day)
-
-#if local_db_delete_frequency_hour != 0:
-#	cron_job_curl.hour.every(local_db_delete_frequency_hour)
-
-#if local_db_delete_frequency_min != 0:
-#	cron_job_curl.minute.every(local_db_delete_frequency_min)
-#
 tab.write()
 print tab.render ()
 exit

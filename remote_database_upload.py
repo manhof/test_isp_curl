@@ -35,8 +35,11 @@ max_time_statement = (
 )
 
 cursor.execute(max_time_statement)
-number_max_tuple = tuple(cursor.fetchone())
-number_max = max(number_max_tuple)
+try:
+	number_max_tuple = tuple(cursor.fetchone())
+	number_max = max(number_max_tuple)
+except TypeError:
+	number_max = 0
 cursor.close()
 print "create new csv"
 
@@ -74,15 +77,15 @@ mydb2 = MySQLdb.connect(host=config.get('Section 5','remote_database_url_ip'),
     passwd=config.get('Section 5','remote_database_password'),
     db=config.get('Section 5','remote_database_name'))
 cursor2 = mydb2.cursor()
-fieldnames2 = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
+fieldnames2 = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17']
 csv_data = csv.DictReader(file(csv_file),fieldnames=fieldnames2)
 print number_max
 for row in csv_data:
 	insert_stmt = (
-		"INSERT INTO " + config.get('Section 5','remote_table_name') +"(site, time_id, date, url, user_agent, url_e, http_code, ip_port, download_speed, upload_speed, dns_lookup_time, tcp_connect_time, ssl_connect_time, pretransfer_time, starttransfer_time, total_time)"
-		"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+		"INSERT INTO " + config.get('Section 5','remote_table_name') +"(site, time_id, date, url, user_agent, url_e, http_code, ip_port, download_speed, upload_speed, dns_lookup_time, tcp_connect_time, ssl_connect_time, pretransfer_time,redirect_time, starttransfer_time, total_time)"
+		"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 	)
-	input_data = (site_id, row['2'], row['3'],'"'+row['4']+'"',row['5'],row['6'],row['7'],row['8'],row['9'],row['10'],row['11'],row['12'],row['13'],row['14'],row['15'], row['16'])
+	input_data = (site_id, row['2'], row['3'],'"'+row['4']+'"',row['5'],row['6'],row['7'],row['8'],row['9'],row['10'],row['11'],row['12'],row['13'],row['14'],row['15'], row['16'],row['17'])
 	print row['2']	
 	if number_max is None:
 		cursor2.execute(insert_stmt, input_data)	
