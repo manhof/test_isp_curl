@@ -31,7 +31,7 @@ cursor = mydb.cursor()
 max_time_statement = (
 	"SELECT time_id from " + config.get('Section 5','remote_table_name')+
 	" WHERE site='" + site_id +"' "
-	"ORDER BY ID DESC LIMIT 1"
+	"ORDER BY id DESC LIMIT 1"
 )
 
 cursor.execute(max_time_statement)
@@ -82,7 +82,7 @@ csv_data = csv.DictReader(file(csv_file),fieldnames=fieldnames2)
 print number_max
 for row in csv_data:
 	insert_stmt = (
-		"INSERT INTO " + config.get('Section 5','remote_table_name') +"(site, time_id, date, url, user_agent, url_e, http_code, ip_port, download_speed, upload_speed, dns_lookup_time, tcp_connect_time, ssl_connect_time, pretransfer_time,redirect_time, starttransfer_time, total_time)"
+		"INSERT INTO " + config.get('Section 5','remote_table_name') +"(site, time_id, date, url, user_agent, url_e, http_code, ip_port, download_speed, upload_speed, dns_lookup_time, tcp_connect_time, ssl_connect_time, pretransfer_time, redirect_time, starttransfer_time, total_time)"
 		"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 	)
 	input_data = (site_id, row['2'], row['3'],'"'+row['4']+'"',row['5'],row['6'],row['7'],row['8'],row['9'],row['10'],row['11'],row['12'],row['13'],row['14'],row['15'], row['16'],row['17'])
