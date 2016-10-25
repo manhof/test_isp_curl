@@ -28,6 +28,7 @@ mydb = MySQLdb.connect(host=config.get('Section 4','local_database_url_ip'),
 cursor = mydb.cursor()
 cursor.execute("Select max(time_id) from " + config.get('Section 4','local_table_name'))
 number_max_tuple = tuple(cursor.fetchone())
+cursor.close()
 number_max = max(number_max_tuple)
 fieldnames2 = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15']
 csv_data = csv.DictReader(file(csv_file1),fieldnames=fieldnames2)
